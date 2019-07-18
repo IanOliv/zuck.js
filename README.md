@@ -1,6 +1,6 @@
 # zuck.js
 
-[![Zuck.JS demo](https://raw.githubusercontent.com/ramon82/zuck.js/master/preview.gif)](https://on.ramon82.com/2ojlR5C)
+[![Zuck.JS demo](https://raw.githubusercontent.com/ramon82/assets/master/zuck.js/preview.gif)](https://on.ramon82.com/2ojlR5C)
 
 ## Add stories EVERYWHERE
 MWHAHAHAHA. Seriously. This script is a copy of Facebook Stories of a copy of Facebook Messenger Day of a copy of WhatsApp status of a copy of Instagram stories of a copy of Snapchat stories. 
@@ -19,68 +19,76 @@ Live demo: https://on.ramon82.com/2ojlR5C
 * A simple media viewer, with gestures and events
 * A simple API to manage your "Stories timeline"
 * Lightweight (5kb gzipped - 15kb minified)
-* Now with 3D cube effect!
+* 3D cube effect!
+* Item navigation based on user touch
 
 
 ## How to use
+You can download this git repository or install via ```npm install zuck.js```
+
 Initialize:
 
 ```js
 
 var stories = new Zuck({
-    id: '',                // timeline container id or reference
-    skin: 'snapgram',      // container class
-    avatars: true,         // shows user photo instead of last story item preview
-    list: false,           // displays a timeline instead of carousel
-    openEffect: true,      // enables effect when opening story - may decrease performance
-    cubeEffect: false,     // enables the 3d cube effect when sliding story - may decrease performance
-    autoFullScreen: false, // enables fullscreen on mobile browsers
-    backButton: true,      // adds a back button to close the story viewer
-    backNative: false,     // uses window history to enable back button on browsers/android
+  id: '',                // timeline container id or reference
+  skin: 'snapgram',      // container class
+  avatars: true,         // shows user photo instead of last story item preview
+  list: false,           // displays a timeline instead of carousel
+  openEffect: true,      // enables effect when opening story - may decrease performance
+  cubeEffect: false,     // enables the 3d cube effect when sliding story - may decrease performance
+  autoFullScreen: false, // enables fullscreen on mobile browsers
+  backButton: true,      // adds a back button to close the story viewer
+  backNative: false,     // uses window history to enable back button on browsers/android
+  previousTap: true,     // use 1/3 of the screen to navigate to previous item when tap the story
 
-    stories: [             // array of stories
-        // see stories structure example
-    ],
+  stories: [ // array of stories
+    // see stories structure example
+  ],
 
-    callbacks:  {
-        'onOpen': function(storyId, callback) { // on open story viewer
-            callback();
-        },
-
-        'onView': function(storyId) { // on view story
-
-        },
-
-        'onEnd': function(storyId, callback) { // on end story
-            callback();
-        },
-
-        'onClose': function(storyId, callback) { // on close story viewer
-            callback();
-        },
-
-        'onNextItem': function(storyId, nextStoryId, callback) { // on next item of story
-            callback();
-        },
+  callbacks:  {
+    'onOpen': function(storyId, callback) {
+      callback();  // on open story viewer
     },
 
-    'language': { // if you need to translate :)
-      'unmute': 'Touch to unmute',
-      'keyboardTip': 'Press space to see next',
-      'visitLink': 'Visit link',
-      'time': {
-          'ago':'ago', 
-          'hour':'hour', 
-          'hours':'hours', 
-          'minute':'minute', 
-          'minutes':'minutes', 
-          'fromnow': 'from now', 
-          'seconds':'seconds', 
-          'yesterday': 'yesterday', 
-          'tomorrow': 'tomorrow', 
-          'days':'days'
-      }
+    'onRender': function(item, mediaHTML) {
+      return mediaHTML; // on render story viewer, use if you want custom elements
+    },
+
+    'onView': function(storyId) {
+      // on view story
+    },
+
+    'onEnd': function(storyId, callback) {
+      callback();  // on end story
+    },
+
+    'onClose': function(storyId, callback) {
+      callback();  // on close story viewer
+    },
+
+    'onNavigateItem': function(storyId, nextStoryId, callback) {
+      callback();  // on navigate item of story
+    },
+  },
+
+  'language': { // if you need to translate :)
+    'unmute': 'Touch to unmute',
+    'keyboardTip': 'Press space to see next',
+    'visitLink': 'Visit link',
+    'time': {
+      'ago':'ago', 
+      'hour':'hour', 
+      'hours':'hours', 
+      'minute':'minute', 
+      'minutes':'minutes', 
+      'fromnow': 'from now', 
+      'seconds':'seconds', 
+      'yesterday': 'yesterday', 
+      'tomorrow': 'tomorrow', 
+      'days':'days'
     }
+  }
 });
 ```
 
@@ -154,7 +162,7 @@ In your HTML:
         
             <!-- story item -->
             <li data-id="{{story.items.id}}" data-time="{{story.items.time}}" class="{{story.items.seen}}">
-                <a href="{{story.items.src}}" data-type="{{story.items.type}}" data-length="{{story.items.length}}" data-link="{{story.items.link}}" data-link-text="{{story.items.linkText}}">
+                <a href="{{story.items.src}}" data-type="{{story.items.type}}" data-length="{{story.items.length}}" data-link="{{story.items.link}}" data-linkText="{{story.items.linkText}}">
                     <img src="{{story.items.preview}}">
                 </a>
             </li>
@@ -175,37 +183,14 @@ var stories = new Zuck({{element id string or element reference}});
 
 
 ### Tips
-Use with autoFullScreen option (disabled by default) to emulate an app on mobile devices.
-
+- You can use with autoFullScreen option (disabled by default) to emulate an app on mobile devices.
+- If you use Ionic or some js that uses ```location.hash```, you should always disable the "backNative" option which can mess your navigation.
 
 ## Limitations
 On mobile browsers, video can't play with audio without a user gesture. So the script tries to play audio only when the user clicks to see the next story. 
 When the story is playing automatically, the video is muted, but an alert is displayed so the user may click to turn the audio on.
 
 Stories links opens in a new window too. This behaviour occurs because most websites are blocked on iframe embedding. 
-
-
-## Forks
-Things already created with zuck.js:
-
-* [BuddyPress Stories](https://github.com/mustafauysal/bp-stories)
-
-Send a PR to list yours!
-
-
-## Next features
-If anyone is interested in contributing:
-
-* AI
-* More AI
-* Chat bots
-* ULTIMATE BIG COLLECTION OF STICKERS (make sure to update the changelog with every new sticker pack)
-* Anyone missing Snapchat theme?
-* Something so sick that Zuck would copy after - INCEPTION!
-* Anything that would increase the lib weight to bet Ember.js or blow up user storage
-* Hm, did I say already MORE AI?
-
-Sorry I got inspired - It makes me so happy to see people laughing at this, thank you! :)
 
 
 ## License
